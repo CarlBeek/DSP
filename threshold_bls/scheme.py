@@ -1,25 +1,25 @@
-import environment as env
+from environment import *
 
 
 def key_gen():
-    sk = env.o.random()
-    pk = sk*env.g2
+    sk = o.random()
+    pk = sk*g2
     return sk, pk
 
 
 def sign(m, sk):
     assert len(m) > 0
-    m = env.hash(m)
-    h = env.G.hashG1(m)
+    m = hash(m)
+    h = G.hashG1(m)
     sigma = sk*h
     return sigma
 
 
 def verify(pk, sigma, m):
     assert len(m) > 0
-    m = env.hash(m)
-    h = env.G.hashG1(m)
-    return not h.isinf() and env.e(sigma, env.g2) == env.e(h, pk)
+    m = hash(m)
+    h = G.hashG1(m)
+    return not h.isinf() and e(sigma, g2) == e(h, pk)
 
 
 def main():
