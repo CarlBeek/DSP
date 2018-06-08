@@ -37,7 +37,8 @@ def signature_reconstruction(pks, sigmas, m):
     # Filter out the invalid signatures by checking all of them (required for robustness)
     sigmas = filter(lambda a: partial_verify(a[0], a[1], m), zip(pks, sigmas))
     sigmas = list(map(lambda a: a[1], sigmas))
-    # Check that there are sufficient signatures remaining
+
+    # Check that there are sufficient (valid) signatures remaining
     if len(sigmas) <= t:
         raise AssertionError('At least t + 1 valid signatures are needed to recover a valid group signature.')
 
