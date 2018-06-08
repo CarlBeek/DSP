@@ -2,7 +2,6 @@ import scheme as bls
 from utils import *
 from environment import *
 from functools import reduce
-from random import SystemRandom
 
 t = None
 n = None
@@ -34,10 +33,10 @@ def public_key_reconstruction(pks):
     return pk
 
 
-def signature_reconstruction(m, sigmas):
-    # # Filter out the invalid signatures by checking all of them (required for robustness)
-    # sigmas = list(filter(lambda a: partial_verify(m, a), sigmas))
-
+def signature_reconstruction(pks, sigmas, m):
+    # Filter out the invalid signatures by checking all of them (required for robustness)
+    sigmas = filter(lambda a: partial_verify(a[0], a[1], m), zip(pks, sigmas))
+    sigmas = list(map(lambda a: a[1], sigmas))
     # Check that there are sufficient signatures remaining
     if len(sigmas) <= t:
         raise AssertionError('At least t + 1 valid signatures are needed to recover a valid group signature.')
@@ -62,5 +61,5 @@ if __name__ == '__main__':
     m = 'Banana'
     sigmas = [partial_sign(m, s) for s in sks]
     ver = [partial_verify(pks[i], sigmas[i], m) for i in range(len(sigmas))]
-    sigma = signature_reconstruction(m, sigmas)
+    sigma = signature_reconstruction(pks, sigmas, m)
     print(verify(pk, sigma, m))
